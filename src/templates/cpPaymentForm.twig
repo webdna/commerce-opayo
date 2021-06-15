@@ -1,0 +1,126 @@
+<div id="opayo-form"">
+	<input type="hidden" name="nonce">
+	  <input type="hidden" name="sessionKey" value="{{ gateway.token }}">
+
+	  {% import "_includes/forms" as forms %}
+	  
+	  <fieldset class="card-holder">
+		  <legend>{{ 'Card Holder'|t('commerce') }}</legend>
+	  
+		  <div class="grid" data-cols="2">
+	  
+			  <!-- Card Holder Name -->
+			  <div class="item" data-colspan="1">
+				  {{ forms.text({
+					  name: 'firstName',
+					  maxlength: 70,
+					  placeholder: "First Name"|t('commerce'),
+					  autocomplete: false,
+					  class: 'card-holder-first-name'~(paymentForm.getErrors('firstName') ? ' error'),
+					  value: paymentForm.firstName,
+					  required: true,
+				  }) }}
+			  </div>
+	  
+			  <div class="item" data-colspan="1">
+				  {{ forms.text({
+					  name: 'lastName',
+					  maxlength: 70,
+					  placeholder: "Last Name"|t('commerce'),
+					  autocomplete: false,
+					  class: 'card-holder-last-name'~(paymentForm.getErrors('lastName') ? ' error'),
+					  value: paymentForm.lastName,
+					  required: true,
+				  }) }}
+			  </div>
+		  </div>
+	  
+		  {% set errors = [] %}
+		  {% for attributeKey in ['firstName', 'lastName'] %}
+			  {% set errors = errors|merge(paymentForm.getErrors(attributeKey)) %}
+		  {% endfor %}
+	  
+		  {{ forms.errorList(errors) }}
+	  </fieldset>
+	  
+	  <!-- Card Number -->
+	  <fieldset class="card-data">
+		  <legend>{{ 'Card'|t('commerce') }}</legend>
+	  
+		  <div>
+			  <div>
+				  {{ forms.text({
+					  name: 'number',
+					  maxlength: 19,
+					  placeholder: "Card Number"|t('commerce'),
+					  autocomplete: false,
+					  class: 'card-number'~(paymentForm.getErrors('number') ? ' error'),
+					  value: paymentForm.number
+				  }) }}
+	  
+			  </div>
+	  
+			  <div>
+				  {{ forms.text({
+					  class: 'card-expiry'~(paymentForm.getErrors('month') or paymentForm.getErrors('year') ? ' error'),
+					  type: 'text',
+					  name: 'expiry',
+					  maxlength: 5,
+					  placeholder: "MM"|t('commerce')~' / '~"YY"|t('commerce'),
+					  value: paymentForm.expiry
+				  }) }}
+	  
+				  {{ forms.text({
+					  type: 'tel',
+					  name: 'cvv',
+					  placeholder: "CVV"|t('commerce'),
+					  class: 'card-cvc'~(paymentForm.getErrors('cvv') ? ' error'),
+					  value: paymentForm.cvv
+				  }) }}
+			  </div>
+		  </div>
+	  
+		  {% set errors = [] %}
+		  {% for attributeKey in ['number', 'month', 'year', 'cvv'] %}
+			  {% set errors = errors|merge(paymentForm.getErrors(attributeKey)) %}
+		  {% endfor %}
+	  
+		  {{ forms.errorList(errors) }}
+	  
+	  </fieldset>
+
+
+<div class="card-errors" role="alert"></div>
+
+</div>
+
+<script>
+	  var $form = document.querySelector('[id="gateway-{{ gateway.id }}-form"] form');
+	  console.log($form)
+	  function paymentFormSubmit(e){
+		if (e.target.querySelector('[name="nonce"]').value == '') {
+		e.preventDefault();
+		
+		sagepayOwnForm({ merchantSessionKey: '{{ gateway.token }}' }).tokeniseCardDetails({ 
+		  cardDetails: { 
+			cardholderName: e.target.querySelector('[name="firstName"]').value+' '+e.target.querySelector('[name="lastName"]').value,
+			cardNumber: e.target.querySelector('[name="number"]').value,
+			expiryDate: e.target.querySelector('[name="expiry"]').value.replace('/',''),
+			securityCode: e.target.querySelector('[name="cvv"]').value 
+		  },
+		  onTokenised : function(result) { 
+			if (result.success) { 
+			  e.target.querySelector('[name="nonce"]').value = result.cardIdentifier;
+			  //console.log(result)
+			  $form.removeEventListener('submit', paymentFormSubmit);
+			  e.target.submit(); 
+			} else { 
+			  alert(JSON.stringify(result)); 
+			} 
+		  } 
+		}); 
+	  }
+	  }
+	  $form.addEventListener('submit', paymentFormSubmit);
+	
+	</script>

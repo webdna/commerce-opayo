@@ -1,0 +1,71 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Commerce Opayo plugin for Craft CMS 3.x
+ *
+ * Commerce Opayo Settings.twig
+ *
+ * @author    Web DNA
+ * @copyright Copyright (c) 2021 Web DNA
+ * @link      https://webdna.co.uk
+ * @package   CommerceOpayo
+ * @since     1.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{# {% do view.registerAssetBundle("webdna\\commerce\\opayo\\assetbundles\\commerceopayo\\CommerceOpayoAsset") %} #}
+
+{{ forms.autosuggestField({
+    label: 'Vendor Name'|t('commerce'),
+    id: 'vendorName',
+    class: 'ltr',
+    name: 'vendorName',
+    value: gateway.vendorName,
+    errors: gateway.getErrors('vendorName'),
+    suggestEnvVars: true,
+    required: true,
+}) }}
+
+{{ forms.autosuggestField({
+    label: 'Integration Key'|t('commerce'),
+    id: 'key',
+    class: 'ltr',
+    name: 'key',
+    value: gateway.key,
+    errors: gateway.getErrors('key'),
+    suggestEnvVars: true,
+    required: true,
+}) }}
+
+{{ forms.autosuggestField({
+    label: 'Integration Password'|t('commerce'),
+    id: 'password',
+    class: 'ltr',
+    name: 'password',
+    value: gateway.password,
+    errors: gateway.getErrors('password'),
+    suggestEnvVars: true,
+    required: true,
+}) }}
+
+
+{{ forms.selectField({
+    label: 'Opayo Payment Type'|t('commerce'),
+    id: 'opayoPaymentType',
+    class: 'ltr',
+    name: 'opayoPaymentType',
+    value: gateway.opayoPaymentType,
+    errors: gateway.getErrors('opayoPaymentType'),
+    options: [{label:'Payment', value:'Payment'}, {label:'Deferred', value:'Deferred'}],
+    required: true,
+}) }}
+
+
+{{ forms.lightswitchField({
+    label: "Test mode?"|t('commerce'),
+    name: 'testMode',
+    on: gateway.testMode,
+    errors: gateway.getErrors('testMode'),
+}) }}

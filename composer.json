@@ -1,0 +1,41 @@
+{
+    "name": "webdna/commerce-opayo",
+    "description": "Opayo payment gateway for Craft Commerce",
+    "type": "craft-plugin",
+    "version": "0.1.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "commerce opayo"
+    ],
+    "support": {
+        "docs": "https://github.com/webdna/commerce-opayo/blob/master/README.md",
+        "issues": "https://github.com/webdna/commerce-opayo/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Web DNA",
+            "homepage": "https://webdna.co.uk"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "webdna\\commerce\\opayo\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Commerce Opayo",
+        "handle": "commerce-opayo",
+        "developer": "Web DNA",
+        "developerUrl": "https://webdna.co.uk",
+        "documentationUrl": "https://github.com/webdna/commerce-opayo/blob/master/README.md",
+        "changelogUrl": "https://raw.githubusercontent.com/webdna/commerce-opayo/master/CHANGELOG.md",
+        "class": "webdna\\commerce\\opayo\\Opayo"
+    }
+}
