@@ -166,11 +166,8 @@ class Gateway extends BaseGateway
         $previousMode = $view->getTemplateMode();
         $view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
-        if ($this->testMode) {
-            $view->registerJsFile('https://pi-test.sagepay.com/api/v1/js/sagepay.js');
-        } else {
-            $view->registerJsFile('https://pi-live.sagepay.com/api/v1/js/sagepay.js');
-        }
+        $view->registerJsFile($this->apiUrl.'js/sagepay.js');
+
         //$view->registerAssetBundle(ChargeFormAsset::class);
         // $view->registerJs(<<<EOD
         //     var form = document.querySelector('[id="gateway-$this->id-form"] form');
@@ -341,7 +338,7 @@ class Gateway extends BaseGateway
         if ($cres) {
             $response = $this->api('transactions/'.$transactionId.'/3d-secure-challenge', [
                 'threeDSSessionData' => $transactionId,
-                'cres' => $cres,
+                'CRes' => $cres,
             ]);
         }
 
