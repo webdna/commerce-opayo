@@ -72,9 +72,6 @@ class Gateway extends BaseGateway
 
     public $opayoPaymentType;
 
-
-
-
     private $merchantSessionKey;
 
     private $sendCartInfo = false;
@@ -121,7 +118,7 @@ class Gateway extends BaseGateway
         }
 
         $response = $this->api('merchant-session-keys', [
-            'vendorName' => Craft::parseEnv($this->vendorName)
+            'vendorName' => Craft::parseEnv($this->vendorName),
         ]);
 
         if (isset($response['merchantSessionKey'])) {
@@ -148,10 +145,16 @@ class Gateway extends BaseGateway
 
         // If there's no order passed, add the current cart if we're not messing around in backend.
         if (!isset($params['order']) && !Craft::$app->getRequest()->getIsCpRequest()) {
-            $billingAddress = Commerce::getInstance()->getCarts()->getCart()->getBillingAddress();
+            $billingAddress = Commerce::getInstance()
+                ->getCarts()
+                ->getCart()
+                ->getBillingAddress();
 
             if (!$billingAddress) {
-                $billingAddress = Commerce::getInstance()->getCustomers()->getCustomer()->getPrimaryBillingAddress();
+                $billingAddress = Commerce::getInstance()
+                    ->getCustomers()
+                    ->getCustomer()
+                    ->getPrimaryBillingAddress();
             }
         } else {
             $billingAddress = $params['order']->getBillingAddress();
@@ -166,7 +169,7 @@ class Gateway extends BaseGateway
         $previousMode = $view->getTemplateMode();
         $view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
-        $view->registerJsFile($this->apiUrl.'js/sagepay.js');
+        $view->registerJsFile($this->apiUrl . 'js/sagepay.js');
 
         //$view->registerAssetBundle(ChargeFormAsset::class);
         // $view->registerJs(<<<EOD
@@ -205,27 +208,20 @@ class Gateway extends BaseGateway
         return $html;
     }
 
-    public function authorize(
-        Transaction $transaction,
-        BasePaymentForm $form
-    ): RequestResponseInterface {
+    public function authorize(Transaction $transaction, BasePaymentForm $form): RequestResponseInterface
+    {
     }
 
-    public function capture(
-        Transaction $transaction,
-        string $reference
-    ): RequestResponseInterface {
+    public function capture(Transaction $transaction, string $reference): RequestResponseInterface
+    {
     }
 
-    public function completeAuthorize(
-        Transaction $transaction
-    ): RequestResponseInterface {
+    public function completeAuthorize(Transaction $transaction): RequestResponseInterface
+    {
     }
 
-    public function createPaymentSource(
-        BasePaymentForm $sourceData,
-        int $userId
-    ): PaymentSource {
+    public function createPaymentSource(BasePaymentForm $sourceData, int $userId): PaymentSource
+    {
     }
 
     public function deletePaymentSource($token): bool
@@ -238,16 +234,13 @@ class Gateway extends BaseGateway
         return new Payment();
     }
 
-    public function purchase(
-        Transaction $transaction,
-        BasePaymentForm $form
-    ): RequestResponseInterface {
+    public function purchase(Transaction $transaction, BasePaymentForm $form): RequestResponseInterface
+    {
         try {
             $order = $transaction->getOrder();
             $request = Craft::$app->getRequest();
 
             //Craft::dd($form);
-
 
             $data = [
                 'transactionType' => $this->opayoPaymentType,
@@ -255,34 +248,33 @@ class Gateway extends BaseGateway
                     'card' => [
                         'merchantSessionKey' => $form->sessionKey,
                         'cardIdentifier' => $form->nonce,
-                    ]
+                    ],
                 ],
-                'vendorTxCode' => $transaction->hash,
-                'amount' => intval(round($transaction->paymentAmount*100)),
+                'vendorTxCode' => StringHelper::substr($transaction->hash, 0, 40),
+                'amount' => intval(round($transaction->paymentAmount * 100)),
                 'currency' => $transaction->currency,
                 'description' => 'Ecommerce',
-                "customerFirstName" => $order->billingAddress->firstName,
-                "customerLastName" => $order->billingAddress->lastName,
-                'customerEmail' => $order->email,
-                'customerPhone' => $order->billingAddress->phone,
+                'customerFirstName' => StringHelper::substr($order->billingAddress->firstName, 0, 20),
+                'customerLastName' => StringHelper::substr($order->billingAddress->lastName, 0, 20),
+                'customerEmail' => StringHelper::substr($order->email, 0, 80),
+                'customerPhone' => StringHelper::substr($order->billingAddress->phone, 0, 19),
                 'billingAddress' => [
-                    'address1' => $order->billingAddress->address1,
-                    'city' => $order->billingAddress->city,
-                    'postalCode' => $order->billingAddress->zipCode,
+                    'address1' => StringHelper::substr($order->billingAddress->address1, 0, 50),
+                    'city' => StringHelper::substr($order->billingAddress->city, 0, 40),
+                    'postalCode' => StringHelper::substr($order->billingAddress->zipCode, 0, 10),
                     'country' => $order->billingAddress->countryIso,
                 ],
-                "apply3DSecure" => "UseMSPSetting",
-                "strongCustomerAuthentication" => [
-                    "notificationURL" => UrlHelper::actionUrl('commerce/payments/complete-payment?commerceTransactionHash='.$transaction->hash),
-                    "browserIP" => $request->userIP,
-                    "browserAcceptHeader" => $request->getHeaders()->get('accept'),
-                    "browserJavascriptEnabled" => false,
-                    "browserLanguage" => Craft::$app->language,
-                    "browserUserAgent" => $request->getUserAgent(),
-                    "challengeWindowSize" => "FullScreen",
-                    "transType" => "GoodsAndServicePurchase",
+                'apply3DSecure' => 'UseMSPSetting',
+                'strongCustomerAuthentication' => [
+                    'notificationURL' => UrlHelper::actionUrl('commerce/payments/complete-payment?commerceTransactionHash=' . $transaction->hash),
+                    'browserIP' => $request->userIP,
+                    'browserAcceptHeader' => $request->getHeaders()->get('accept'),
+                    'browserJavascriptEnabled' => false,
+                    'browserLanguage' => Craft::$app->language,
+                    'browserUserAgent' => $request->getUserAgent(),
+                    'challengeWindowSize' => 'FullScreen',
+                    'transType' => 'GoodsAndServicePurchase',
                 ],
-
             ];
 
             if ($request->isCpRequest) {
@@ -310,33 +302,26 @@ class Gateway extends BaseGateway
                 throw new PaymentException($message);
             }
 
-            Opayo::error('The payment could not be processed (' .
-            get_class($exception) .
-            ')');
-            throw new PaymentException(
-                'The payment could not be processed (' .
-                    get_class($exception) .
-                    ')'
-            );
+            Opayo::error('The payment could not be processed (' . get_class($exception) . ')');
+            throw new PaymentException('The payment could not be processed (' . get_class($exception) . ')');
         }
     }
 
-    public function completePurchase(
-        Transaction $transaction
-    ): RequestResponseInterface {
+    public function completePurchase(Transaction $transaction): RequestResponseInterface
+    {
         $transactionId = Craft::$app->getRequest()->getParam('threeDSSessionData');
         $cres = Craft::$app->getRequest()->getParam('cres');
         $pares = Craft::$app->getRequest()->getParam('PaRes');
         $md = Craft::$app->getRequest()->getParam('MD');
 
         if ($pares) {
-            $response = $this->api('transactions/'.$md.'/3d-secure', [
+            $response = $this->api('transactions/' . $md . '/3d-secure', [
                 'paRes' => $pares,
             ]);
-            $response = $this->api('transactions/'.$md, [], 'GET');
+            $response = $this->api('transactions/' . $md, [], 'GET');
         }
         if ($cres) {
-            $response = $this->api('transactions/'.$transactionId.'/3d-secure-challenge', [
+            $response = $this->api('transactions/' . $transactionId . '/3d-secure-challenge', [
                 'threeDSSessionData' => $transactionId,
                 'CRes' => $cres,
             ]);
@@ -352,12 +337,11 @@ class Gateway extends BaseGateway
             $response = $this->api('transactions', [
                 'transactionType' => 'Refund',
                 'vendorTxCode' => $transaction->hash,
-                "referenceTransactionId" => $transaction->reference,
-                'amount' => intval($transaction->paymentAmount*100),
+                'referenceTransactionId' => $transaction->reference,
+                'amount' => intval($transaction->paymentAmount * 100),
                 'currency' => $transaction->currency,
-                'description' => ($transaction->note != '') ? $transaction->note : '-',
+                'description' => $transaction->note != '' ? $transaction->note : '-',
             ]);
-
 
             return new PaymentResponse($response);
         } catch (\Exception $exception) {
@@ -414,11 +398,9 @@ class Gateway extends BaseGateway
         return false;
     }
 
-
-
-    private function api($endpoint, $payload=[], $method='POST')
+    private function api($endpoint, $payload = [], $method = 'POST')
     {
-        $response = $this->client->request($method, $this->apiUrl.$endpoint, [
+        $response = $this->client->request($method, $this->apiUrl . $endpoint, [
             'auth' => [Craft::parseEnv($this->key), Craft::parseEnv($this->password)],
             'json' => $payload,
         ]);
