@@ -323,7 +323,7 @@ class Gateway extends BaseGateway
         if ($cres) {
             $response = $this->api('transactions/' . $transactionId . '/3d-secure-challenge', [
                 'threeDSSessionData' => $transactionId,
-                'CRes' => $cres,
+                'cRes' => $cres,
             ]);
         }
 
