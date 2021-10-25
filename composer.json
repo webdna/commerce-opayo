@@ -2,7 +2,7 @@
 	"name": "webdna/commerce-opayo",
 	"description": "Opayo payment gateway for Craft Commerce",
 	"type": "craft-plugin",
-	"version": "0.1.4",
+	"version": "0.1.5",
 	"keywords": [
 		"craft",
 		"cms",

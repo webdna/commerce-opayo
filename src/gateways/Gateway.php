@@ -267,7 +267,6 @@ class Gateway extends BaseGateway
                 'apply3DSecure' => 'UseMSPSetting',
                 'strongCustomerAuthentication' => [
                     'notificationURL' => UrlHelper::actionUrl('commerce/payments/complete-payment?commerceTransactionHash=' . $transaction->hash),
-                    'browserIP' => $request->getUserIp(FILTER_FLAG_IPV4),
                     'browserAcceptHeader' => $request->getHeaders()->get('accept'),
                     'browserJavascriptEnabled' => false,
                     'browserLanguage' => Craft::$app->language,
@@ -276,6 +275,10 @@ class Gateway extends BaseGateway
                     'transType' => 'GoodsAndServicePurchase',
                 ],
             ];
+
+            if ($ip = $request->getUserIp(FILTER_FLAG_IPV4)) {
+                $data['strongCustomerAuthentication']['browserIP'] = $ip;
+            }
 
             if ($request->isCpRequest) {
                 //$data['apply3DSecure'] = "Disable";
