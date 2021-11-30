@@ -263,6 +263,7 @@ class Gateway extends BaseGateway
                     'city' => StringHelper::substr($order->billingAddress->city, 0, 40),
                     'postalCode' => StringHelper::substr($order->billingAddress->zipCode, 0, 10),
                     'country' => $order->billingAddress->countryIso,
+                    'state' => $order->billingAddress->state->abbreviation,
                 ],
                 'apply3DSecure' => 'UseMSPSetting',
                 'strongCustomerAuthentication' => [
