@@ -241,6 +241,10 @@ class Gateway extends BaseGateway
             $request = Craft::$app->getRequest();
 
             //Craft::dd($form);
+            $state = null;
+            if (isset($order->billingAddress->state)) {
+                $state = (object) $order->billingAddress->state;
+            }
 
             $data = [
                 'transactionType' => $this->opayoPaymentType,
@@ -263,7 +267,7 @@ class Gateway extends BaseGateway
                     'city' => StringHelper::substr($order->billingAddress->city, 0, 40),
                     'postalCode' => StringHelper::substr($order->billingAddress->zipCode, 0, 10),
                     'country' => $order->billingAddress->countryIso,
-                    'state' => isset($order->billingAddress->state) ? $order->billingAddress->state->abbreviation : null,
+                    'state' => isset($state) ? $state->abbreviation : null,
                 ],
                 'apply3DSecure' => 'UseMSPSetting',
                 'strongCustomerAuthentication' => [
