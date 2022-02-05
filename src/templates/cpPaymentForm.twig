@@ -112,7 +112,7 @@
 			if (result.success) { 
 			  e.target.querySelector('[name="nonce"]').value = result.cardIdentifier;
 			  //console.log(result)
-			  $form.removeEventListener('submit', paymentFormSubmit);
+			  e.target.removeEventListener('submit', paymentFormSubmit);
 			  e.target.submit(); 
 			} else { 
 			  alert(JSON.stringify(result)); 
