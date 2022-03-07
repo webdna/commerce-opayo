@@ -96,7 +96,7 @@
 
 <script>
 	  var $form = document.querySelector('[id="gateway-{{ gateway.id }}-form"] form');
-	  console.log($form)
+	  
 	  function paymentFormSubmit(e){
 		if (e.target.querySelector('[name="nonce"]').value == '') {
 		e.preventDefault();

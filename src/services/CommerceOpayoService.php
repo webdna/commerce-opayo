@@ -25,16 +25,5 @@ class CommerceOpayoService extends Component
     // Public Methods
     // =========================================================================
 
-    /*
-     * @return mixed
-     */
-    public function exampleService()
-    {
-        $result = 'something';
-        // Check our Plugin's settings for `someAttribute`
-        if (CommerceOpayo::$plugin->getSettings()->someAttribute) {
-        }
-
-        return $result;
-    }
+    
 }

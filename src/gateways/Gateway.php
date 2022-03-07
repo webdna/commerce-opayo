@@ -110,6 +110,11 @@ class Gateway extends BaseGateway
     public function setSendCartInfo($value)
     {
     }
+    
+    public function getJs()
+    {
+        return $this->apiUrl . 'js/sagepay.js';
+    }
 
     public function getToken()
     {
@@ -170,37 +175,6 @@ class Gateway extends BaseGateway
         $view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
         $view->registerJsFile($this->apiUrl . 'js/sagepay.js');
-
-        //$view->registerAssetBundle(ChargeFormAsset::class);
-        // $view->registerJs(<<<EOD
-        //     var form = document.querySelector('[id="gateway-$this->id-form"] form');
-        //       console.log(form)
-        //       function paymentFormSubmit(e){
-        //         //if (e.target.querySelector('[name="nonce"]').value == '') {
-        //         e.preventDefault();
-        //         console.log(e.target.querySelector('[name="firstName"]').value+' '+e.target.querySelector('[name="lastName"]').value)
-        //         sagepayOwnForm({ merchantSessionKey: '$this->token' }).tokeniseCardDetails({
-        //           cardDetails: {
-        //             cardholderName: e.target.querySelector('[name="firstName"]').value+' '+e.target.querySelector('[name="lastName"]').value,
-        //             cardNumber: e.target.querySelector('[name="number"]').value,
-        //             expiryDate: e.target.querySelector('[name="expiry"]').value.replace('/',''),
-        //             securityCode: e.target.querySelector('[name="cvv"]').value
-        //           },
-        //           onTokenised : function(result) {
-        //             if (result.success) {
-        //               e.target.querySelector('[name="nonce"]').value = result.cardIdentifier;
-        //               //console.log(result)
-        //               form.removeEventListener('submit', paymentFormSubmit);
-        //               e.target.submit();
-        //             } else {
-        //               alert(JSON.stringify(result));
-        //             }
-        //           }
-        //         });
-        //       //}
-        //       }
-        //       form.addEventListener('submit', paymentFormSubmit);
-        // EOD);
 
         $html = $view->renderTemplate('commerce-opayo/cpPaymentForm', $params);
         $view->setTemplateMode($previousMode);
