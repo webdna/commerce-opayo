@@ -20,7 +20,7 @@
 	"license": "MIT",
 	"authors": [
 		{
-			"name": "Web DNA",
+			"name": "webdna",
 			"homepage": "https://webdna.co.uk"
 		}
 	],
@@ -35,6 +35,7 @@
 	},
 	"extra": {
 		"name": "Opayo for Craft Commerce",
-		"handle": "commerce-opayo"
+		"handle": "commerce-opayo",
+		"class": "webdna\\commerce\\opayo\\Opayo"
 	}
 }
