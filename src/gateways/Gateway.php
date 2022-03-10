@@ -231,7 +231,7 @@ class Gateway extends BaseGateway
                 'vendorTxCode' => StringHelper::substr($transaction->hash, 0, 40),
                 'amount' => intval(round($transaction->paymentAmount * 100)),
                 'currency' => $transaction->currency,
-                'description' => $order->reference,
+                'description' => $order->shortNumber,
                 'customerFirstName' => StringHelper::substr($order->billingAddress->firstName, 0, 20),
                 'customerLastName' => StringHelper::substr($order->billingAddress->lastName, 0, 20),
                 'customerEmail' => StringHelper::substr($order->email, 0, 80),
