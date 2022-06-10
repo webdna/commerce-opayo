@@ -45,7 +45,7 @@ class Payment extends BasePaymentForm
     /**
      * @inheritdoc
      */
-    public function populateFromPaymentSource(PaymentSource $paymentSource)
+    public function populateFromPaymentSource(PaymentSource $paymentSource): void
     {
         $this->token = $paymentSource->token;
     }

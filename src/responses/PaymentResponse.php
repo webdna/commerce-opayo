@@ -28,7 +28,7 @@ class PaymentResponse implements RequestResponseInterface
     /**
      * @var
      */
-    protected $data = [];
+    protected $data;
     /**
      * @var string
      */
@@ -141,7 +141,7 @@ class PaymentResponse implements RequestResponseInterface
     /**
      * @inheritdoc
      */
-    public function getData()
+    public function getData(): mixed
     {
         return $this->data;
     }
@@ -155,7 +155,7 @@ class PaymentResponse implements RequestResponseInterface
     /**
      * @inheritdoc
      */
-    public function redirect()
+    public function redirect(): void
     {
         $variables = [];
         $hiddenFields = '';
