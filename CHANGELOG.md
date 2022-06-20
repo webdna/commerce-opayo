@@ -1,5 +1,9 @@
 # Release Notes for Opayo for Craft Commerce
 
+## 2.0.0 - 2022-06-10
+### Changed
+- Commerce 4 only version
+
 ## 1.0.3 - 2022-06-10
 ### Changed
 - Logo updated.
