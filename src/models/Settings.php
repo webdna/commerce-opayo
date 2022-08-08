@@ -36,7 +36,7 @@ class Settings extends Model
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    public function rules()
     {
         return [
 

@@ -63,10 +63,9 @@
 }) }}
 
 
-{{ forms.booleanMenuField({
+{{ forms.lightswitchField({
     label: "Test mode?"|t('commerce'),
     name: 'testMode',
-    includeEnvVars: true,
-    value: gateway.testMode,
+    on: gateway.testMode,
     errors: gateway.getErrors('testMode'),
 }) }}

@@ -90,7 +90,7 @@ class Gateway extends BaseGateway
         return Craft::t('commerce', 'Opayo');
     }
 
-    public function init(): void
+    public function init()
     {
         parent::init();
 
@@ -111,12 +111,12 @@ class Gateway extends BaseGateway
     {
     }
     
-    public function getJs(): ?string
+    public function getJs()
     {
         return $this->apiUrl . 'js/sagepay.js';
     }
 
-    public function getToken(): ?string
+    public function getToken()
     {
         if ($this->merchantSessionKey) {
             return $this->merchantSessionKey;
@@ -134,12 +134,12 @@ class Gateway extends BaseGateway
         }
     }
 
-    public function getSettingsHtml(): ?string
+    public function getSettingsHtml()
     {
         return Craft::$app->getView()->renderTemplate('commerce-opayo/settings', ['gateway' => $this]);
     }
 
-    public function getPaymentFormHtml(array $params = []): ?string
+    public function getPaymentFormHtml(array $params = [])
     {
         $defaults = [
             'gateway' => $this,
@@ -216,8 +216,8 @@ class Gateway extends BaseGateway
 
             //Craft::dd($form);
             $state = null;
-            if (isset($order->billingAddress->administrativeArea)) {
-                $state = (object) $order->billingAddress->administrativeArea;
+            if (isset($order->billingAddress->state)) {
+                $state = (object) $order->billingAddress->state;
             }
 
             $data = [
@@ -232,15 +232,15 @@ class Gateway extends BaseGateway
                 'amount' => intval(round($transaction->paymentAmount * 100)),
                 'currency' => $transaction->currency,
                 'description' => $order->shortNumber,
-                'customerFirstName' => StringHelper::substr($order->billingAddress->firstName ?? $order->customer->firstName, 0, 20),
-                'customerLastName' => StringHelper::substr($order->billingAddress->lastName ?? $order->customer->lastName, 0, 20),
+                'customerFirstName' => StringHelper::substr($order->billingAddress->firstName, 0, 20),
+                'customerLastName' => StringHelper::substr($order->billingAddress->lastName, 0, 20),
                 'customerEmail' => StringHelper::substr($order->email, 0, 80),
-                'customerPhone' => StringHelper::substr($order->billingAddress->phone ?? '', 0, 19),
+                'customerPhone' => StringHelper::substr($order->billingAddress->phone, 0, 19),
                 'billingAddress' => [
-                    'address1' => StringHelper::substr($order->billingAddress->addressLine1, 0, 50),
-                    'city' => StringHelper::substr($order->billingAddress->locality, 0, 40),
-                    'postalCode' => StringHelper::substr($order->billingAddress->postalCode, 0, 10),
-                    'country' => $order->billingAddress->countryCode,
+                    'address1' => StringHelper::substr($order->billingAddress->address1, 0, 50),
+                    'city' => StringHelper::substr($order->billingAddress->city, 0, 40),
+                    'postalCode' => StringHelper::substr($order->billingAddress->zipCode, 0, 10),
+                    'country' => $order->billingAddress->countryIso,
                     'state' => isset($state) ? $state->abbreviation : null,
                 ],
                 'apply3DSecure' => 'UseMSPSetting',
@@ -254,8 +254,6 @@ class Gateway extends BaseGateway
                     'transType' => 'GoodsAndServicePurchase',
                 ],
             ];
-            
-            //Craft::dd($data);
 
             if ($ip = $request->getUserIp(FILTER_FLAG_IPV4)) {
                 $data['strongCustomerAuthentication']['browserIP'] = $ip;

@@ -22,7 +22,7 @@ use craft\commerce\services\Gateways;
 use craft\events\RegisterComponentTypesEvent;
 use craft\web\UrlManager;
 use craft\events\RegisterUrlRulesEvent;
-
+use craft\log\FileTarget;
 use yii\log\Logger;
 use yii\base\Event;
 
@@ -51,17 +51,17 @@ class Opayo extends Plugin
     /**
      * @var string
      */
-    public string $schemaVersion = '1.0.0';
+    public $schemaVersion = '1.0.0';
 
     /**
      * @var bool
      */
-    public bool $hasCpSettings = false;
+    public $hasCpSettings = false;
 
     /**
      * @var bool
      */
-    public bool $hasCpSection = false;
+    public $hasCpSection = false;
 
     // Public Methods
     // =========================================================================
@@ -91,7 +91,10 @@ class Opayo extends Plugin
             }
         );
         
-        
+        Craft::getLogger()->dispatcher->targets[] = new FileTarget([
+            'logFile' => Craft::getAlias('@storage/logs/opayo.log'),
+            'categories' => ['opayo'],
+        ]);
 
         Craft::info(
             Craft::t(
@@ -119,7 +122,7 @@ class Opayo extends Plugin
     /**
      * @inheritdoc
      */
-    protected function createSettingsModel(): ?\craft\base\Model
+    protected function createSettingsModel()
     {
         return new Settings();
     }
@@ -127,7 +130,7 @@ class Opayo extends Plugin
     /**
      * @inheritdoc
      */
-    protected function settingsHtml(): ?string
+    protected function settingsHtml(): string
     {
         return Craft::$app->view->renderTemplate(
             'commerce-opayo/settings',
