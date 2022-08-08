@@ -1,5 +1,9 @@
 # Release Notes for Opayo for Craft Commerce
 
+## 1.0.5 - 2022-08-08
+### Changed
+- Syntax error
+
 ## 1.0.4 - 2022-06-20
 ### Changed
 - Commerce 3 only version

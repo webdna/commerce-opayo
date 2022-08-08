@@ -2,7 +2,7 @@
 	"name": "webdna/commerce-opayo",
 	"description": "Opayo integration for Craft Commerce 3.3+",
 	"type": "craft-plugin",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"keywords": [
 		"craft",
 		"cms",
