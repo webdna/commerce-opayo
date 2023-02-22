@@ -110,7 +110,7 @@ class Gateway extends BaseGateway
     public function setSendCartInfo($value)
     {
     }
-    
+
     public function getJs(): ?string
     {
         return $this->apiUrl . 'js/sagepay.js';
@@ -228,18 +228,18 @@ class Gateway extends BaseGateway
                         'cardIdentifier' => $form->nonce,
                     ],
                 ],
-                'vendorTxCode' => StringHelper::substr($transaction->hash, 0, 40),
+                'vendorTxCode' => StringHelper::substr($transaction->hash ?? '', 0, 40),
                 'amount' => intval(round($transaction->paymentAmount * 100)),
                 'currency' => $transaction->currency,
                 'description' => $order->shortNumber,
-                'customerFirstName' => StringHelper::substr($order->billingAddress->firstName ?? $order->customer->firstName, 0, 20),
-                'customerLastName' => StringHelper::substr($order->billingAddress->lastName ?? $order->customer->lastName, 0, 20),
-                'customerEmail' => StringHelper::substr($order->email, 0, 80),
+                'customerFirstName' => StringHelper::substr($order->billingAddress->firstName ?? $order->customer->firstName ?? $order->shippingAddress->firstName ?? '', 0, 20),
+                'customerLastName' => StringHelper::substr($order->billingAddress->lastName ?? $order->customer->lastName ?? $order->shippingAddress->lastName ?? '', 0, 20),
+                'customerEmail' => StringHelper::substr($order->email ?? '', 0, 80),
                 'customerPhone' => StringHelper::substr($order->billingAddress->phone ?? '', 0, 19),
                 'billingAddress' => [
-                    'address1' => StringHelper::substr($order->billingAddress->addressLine1, 0, 50),
-                    'city' => StringHelper::substr($order->billingAddress->locality, 0, 40),
-                    'postalCode' => StringHelper::substr($order->billingAddress->postalCode, 0, 10),
+                    'address1' => StringHelper::substr($order->billingAddress->addressLine1 ?? '', 0, 50),
+                    'city' => StringHelper::substr($order->billingAddress->locality ?? '', 0, 40),
+                    'postalCode' => StringHelper::substr($order->billingAddress->postalCode ?? '', 0, 10),
                     'country' => $order->billingAddress->countryCode,
                     'state' => isset($state) ? $state->abbreviation : null,
                 ],
@@ -254,7 +254,7 @@ class Gateway extends BaseGateway
                     'transType' => 'GoodsAndServicePurchase',
                 ],
             ];
-            
+
             //Craft::dd($data);
 
             if ($ip = $request->getUserIp(FILTER_FLAG_IPV4)) {

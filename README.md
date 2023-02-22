@@ -6,7 +6,7 @@ This plugin provides a [Opyao](https://www.opayo.co.uk/) integration for [Craft 
 
 ## Requirements
 
-This plugin requires Craft 3.6 and Craft Commerce 3.3 or later.
+This plugin requires Craft 4.0 and Craft Commerce 4.0 or later.
 
 ## Installation
 
@@ -44,16 +44,16 @@ Example implementation
 ```twig
 <form method="POST" id="opayo-form">
        {{ csrfInput() }}
-       {% set gateway = craft.commerce.gateways.getGatewayByHandle('opayo') %} 
+       {% set gateway = craft.commerce.gateways.getGatewayByHandle('opayo') %}
        <script src="{{ gateway.getJs() }}"></script>
        <input type="hidden" name="nonce">
        <input type="hidden" name="sessionKey" value="{{ gateway.token }}">
-       
+
        <input type="text" id="name" value="" autocomplete="off" required>
        <input type="text" id="cardnumber" value="" autocomplete="off" required>
        <input type="text" id="expiry" placeholder="MMYY" value="" autocomplete="off" required>
        <input type="text" id="cvv" value="" autocomplete="off" required>
-       
+
        <button type="submit">Submit</button>
 </form>
 ```
@@ -63,7 +63,7 @@ function paymentFormSubmit(e) {
         e.preventDefault();
         // disable submit button
         e.target.querySelector('button[type="submit"]').disabled = true;
-        
+
         sagepayOwnForm({
                 merchantSessionKey: e.target.querySelector('input[name="sessionKey"]').value
         }).tokeniseCardDetails({

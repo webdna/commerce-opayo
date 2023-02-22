@@ -1,5 +1,9 @@
 # Release Notes for Opayo for Craft Commerce
 
+## 2.0.2 - 2023-02-22
+### Fixed
+- Errors with substr
+
 ## 2.0.1 - 2023-01-30
 ### Fixed
 - TestMode as an Env Var.
