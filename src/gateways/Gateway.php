@@ -297,6 +297,7 @@ class Gateway extends BaseGateway
         $cres = Craft::$app->getRequest()->getParam('cres');
         $pares = Craft::$app->getRequest()->getParam('PaRes');
         $md = Craft::$app->getRequest()->getParam('MD');
+        $response = null;
 
         if ($pares) {
             $response = $this->api('transactions/' . $md . '/3d-secure', [
@@ -309,6 +310,14 @@ class Gateway extends BaseGateway
                 'threeDSSessionData' => $transactionId,
                 'cRes' => $cres,
             ]);
+        }
+
+        if (!$response) {
+            Opayo::error('There was a problem completing this purchase. $response does not exist');
+            $response = [
+                'status' => 'Failed',
+                'statusDetail' => 'There was a problem completing this purchase.'
+            ];
         }
 
         return new PaymentResponse($response);

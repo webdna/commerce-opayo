@@ -63,7 +63,7 @@ class PaymentResponse implements RequestResponseInterface
      */
     public function isSuccessful(): bool
     {
-        return $this->data->status == 'Ok';
+        return ($this->data->status ?? '') == 'Ok';
     }
     /**
      * @inheritdoc
