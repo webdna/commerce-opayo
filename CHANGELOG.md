@@ -1,5 +1,8 @@
 # Release Notes for Opayo for Craft Commerce
 
+## 2.0.3 - 2023-05-17
+### Fixed
+- Return to payment page with error if 3DS params are missing.
 ## 2.0.2 - 2023-02-22
 ### Fixed
 - Errors with substr
