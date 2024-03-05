@@ -1,5 +1,9 @@
 # Release Notes for Opayo for Craft Commerce
 
+## 1.0.7 - 2024-03-05
+### Changed
+- Updated API urls
+
 ## 1.0.6 - 2022-08-08
 ### Changed
 - Fixed branch. Reverted back to Commerce 3 version.
