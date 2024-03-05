@@ -97,9 +97,9 @@ class Gateway extends BaseGateway
         $this->client = new GuzzleHttp\Client();
 
         if (Craft::parseEnv($this->testMode)) {
-            $this->apiUrl = 'https://pi-test.sagepay.com/api/v1/';
+            $this->apiUrl = 'https://sandbox.opayo.eu.elavon.com/api/v1/';
         } else {
-            $this->apiUrl = 'https://pi-live.sagepay.com/api/v1/';
+            $this->apiUrl = 'https://live.opayo.eu.elavon.com/api/v1/';
         }
     }
 
