@@ -1,5 +1,10 @@
 # Release Notes for Opayo for Craft Commerce
 
+## 3.0.0 - 2025-06-05
+### Changed
+- Craft 5 compatibility
+- Commerce 5 compatibililty
+
 ## 2.0.4 - 2024-03-05
 ### Changed
 - Updated API urls
