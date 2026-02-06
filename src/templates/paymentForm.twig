@@ -1,0 +1,64 @@
+{% set id = gateway.handle|namespace %}
+
+<div id="opayo-form-{{ id }}">
+	
+	{{ actionInput('commerce/payments/pay') }}
+	<input type="hidden" name="gatewayId" value="{{ gatewayId|default(gateway.id) }}"/>
+	{{ csrfInput() }}
+	
+	{% namespace gateway.handle|commercePaymentFormNamespace %}
+	<input type="hidden" name="nonce">
+	<input type="hidden" name="sessionKey" value="{{ gateway.token }}">
+	{% endnamespace %}
+
+	<div id="checkout-form-{{ id }}"></div>
+
+
+	<div class="card-errors" role="alert"></div>
+
+</div>
+
+<script>
+	{% if testMode %}
+		function checkOpayoLoaded() {
+			if (typeof OpayoConfig !== 'undefined') {
+				OpayoConfig.restHost = "https://sandbox.opayo.eu.elavon.com"; 
+				OpayoConfig.restBaseURL = "https://sandbox.opayo.eu.elavon.com/api/v1";
+				
+				opayoCheckout({ merchantSessionKey: '{{ gateway.token }}', containerSelector: '#opayo-form-{{ id }}' }).form({ formSelector: '#checkout-form-{{ id }}' });
+			} else {
+				setTimeout(checkOpayoLoaded, 50);
+			}
+		}
+		checkOpayoLoaded();
+	{% endif %}
+
+	  var $form = document.querySelector('[id="opayo-form-{{ id }}"]').closest('form');
+	  
+	  function paymentFormSubmit(e){
+		if (e.target.querySelector('[name="nonce"]').value == '') {
+		e.preventDefault();
+		
+		opayoOwnForm({ merchantSessionKey: '{{ gateway.token }}' }).tokeniseCardDetails({ 
+		  cardDetails: { 
+			cardholderName: e.target.querySelector('[name="firstName"]').value+' '+e.target.querySelector('[name="lastName"]').value,
+			cardNumber: e.target.querySelector('[name="card-number"]').value.replaceAll(' ',''),
+			expiryDate: e.target.querySelector('[name="expiry"]').value.replace('/',''),
+			securityCode: e.target.querySelector('[name="cvv"]').value 
+		  },
+		  onTokenised : function(result) { 
+			if (result.success) { 
+			  e.target.querySelector('[name="nonce"]').value = result.cardIdentifier;
+			  //console.log(result)
+			  e.target.removeEventListener('submit', paymentFormSubmit);
+			  e.target.submit(); 
+			} else { 
+			  alert(JSON.stringify(result)); 
+			} 
+		  } 
+		}); 
+	  }
+	  }
+	  $form.addEventListener('submit', paymentFormSubmit);
+	
+	</script>

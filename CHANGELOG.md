@@ -1,5 +1,13 @@
 # Release Notes for Opayo for Craft Commerce
 
+## 3.1.0 - 2026-02-06
+### Changed
+- Updated to opayo-1.2.40.js
+
+### Added
+- getJsFile() that returns Url and attributes that include integrity hash
+- getPaymentFormHtml uses drop-in checkout for frontend.
+
 ## 3.0.0 - 2025-06-05
 ### Changed
 - Craft 5 compatibility

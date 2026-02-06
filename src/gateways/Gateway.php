@@ -96,11 +96,16 @@ class Gateway extends BaseGateway
 
         $this->client = new GuzzleHttp\Client();
 
-        if (Craft::parseEnv($this->testMode)) {
+        if ($this->isTestMode()) {
             $this->apiUrl = 'https://sandbox.opayo.eu.elavon.com/api/v1/';
         } else {
             $this->apiUrl = 'https://live.opayo.eu.elavon.com/api/v1/';
         }
+    }
+    
+    public function isTestMode()
+    {
+        return Craft::parseEnv($this->testMode);
     }
 
     public function setMerchantSessionKey($value)
@@ -113,7 +118,19 @@ class Gateway extends BaseGateway
 
     public function getJs(): ?string
     {
-        return $this->apiUrl . 'js/sagepay.js';
+        //return $this->apiUrl . 'js/sagepay.js';
+        return 'https://assets.opayo.cloud/assets/js/opayo-1.2.40.js';
+    }
+    
+    public function getJsFile(): array
+    {
+        return [
+            'url' => $this->getJs(), 
+            'attributes' => [
+                'integrity' => 'sha512-ZplJXUTeRh13LTLjfwydrUFpRJaHOoSIKdoMQP4s1gWyJoXqsTqxBeGdt4fQyfNq/Xo21u8IGaA3PjLfiefZJw==', 
+                'crossorigin' => 'anonymous',
+            ],
+        ];
     }
 
     public function getToken(): ?string
@@ -144,6 +161,7 @@ class Gateway extends BaseGateway
         $defaults = [
             'gateway' => $this,
             'paymentForm' => $this->getPaymentFormModel(),
+            'testMode' => $this->isTestMode(),
         ];
 
         $params = array_merge($defaults, $params);
@@ -174,9 +192,15 @@ class Gateway extends BaseGateway
         $previousMode = $view->getTemplateMode();
         $view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
-        $view->registerJsFile($this->apiUrl . 'js/sagepay.js');
+        $jsFile = $this->getJsFile();
+        $view->registerJsFile($jsFile['url'], $jsFile['attributes']);
 
-        $html = $view->renderTemplate('commerce-opayo/cpPaymentForm', $params);
+        if (Craft::$app->getRequest()->isCpRequest) {
+            $html = $view->renderTemplate('commerce-opayo/cpPaymentForm', $params);
+        } else {
+            $html = $view->renderTemplate('commerce-opayo/paymentForm', $params);
+        }
+        
         $view->setTemplateMode($previousMode);
 
         return $html;

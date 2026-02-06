@@ -1,4 +1,6 @@
-<div id="opayo-form"">
+{% set id = gateway.handle|namespace %}
+
+<div id="opayo-form-{{ id }}">
 	<input type="hidden" name="nonce">
 	  <input type="hidden" name="sessionKey" value="{{ gateway.token }}">
 
@@ -95,13 +97,25 @@
 </div>
 
 <script>
+	{% if testMode %}
+		function checkOpayoLoaded() {
+			if (typeof OpayoConfig !== 'undefined') {
+				OpayoConfig.restHost = "https://sandbox.opayo.eu.elavon.com"; 
+				OpayoConfig.restBaseURL = "https://sandbox.opayo.eu.elavon.com/api/v1";
+			} else {
+				setTimeout(checkOpayoLoaded, 50);
+			}
+		}
+		checkOpayoLoaded();
+	{% endif %}
+
 	  var $form = document.querySelector('[id="gateway-{{ gateway.id }}-form"] form');
 	  
 	  function paymentFormSubmit(e){
 		if (e.target.querySelector('[name="nonce"]').value == '') {
 		e.preventDefault();
 		
-		sagepayOwnForm({ merchantSessionKey: '{{ gateway.token }}' }).tokeniseCardDetails({ 
+		opayoOwnForm({ merchantSessionKey: '{{ gateway.token }}' }).tokeniseCardDetails({ 
 		  cardDetails: { 
 			cardholderName: e.target.querySelector('[name="firstName"]').value+' '+e.target.querySelector('[name="lastName"]').value,
 			cardNumber: e.target.querySelector('[name="card-number"]').value.replaceAll(' ',''),
