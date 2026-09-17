@@ -1,5 +1,9 @@
 # Release Notes for Opayo for Craft Commerce
 
+## 3.1.1 - 2026-09-17
+### Changed
+- Fixed problem with TestMode as an env var.
+
 ## 3.1.0 - 2026-02-06
 ### Changed
 - Updated to opayo-1.2.40.js

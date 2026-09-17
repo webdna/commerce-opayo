@@ -96,16 +96,18 @@ class Gateway extends BaseGateway
 
         $this->client = new GuzzleHttp\Client();
 
+        $this->testMode = Craft::parseBooleanEnv($this->testMode);
+
         if ($this->isTestMode()) {
             $this->apiUrl = 'https://sandbox.opayo.eu.elavon.com/api/v1/';
         } else {
             $this->apiUrl = 'https://live.opayo.eu.elavon.com/api/v1/';
         }
     }
-    
+
     public function isTestMode()
     {
-        return Craft::parseEnv($this->testMode);
+        return Craft::parseBooleanEnv($this->testMode);
     }
 
     public function setMerchantSessionKey($value)
@@ -121,13 +123,13 @@ class Gateway extends BaseGateway
         //return $this->apiUrl . 'js/sagepay.js';
         return 'https://assets.opayo.cloud/assets/js/opayo-1.2.40.js';
     }
-    
+
     public function getJsFile(): array
     {
         return [
-            'url' => $this->getJs(), 
+            'url' => $this->getJs(),
             'attributes' => [
-                'integrity' => 'sha512-ZplJXUTeRh13LTLjfwydrUFpRJaHOoSIKdoMQP4s1gWyJoXqsTqxBeGdt4fQyfNq/Xo21u8IGaA3PjLfiefZJw==', 
+                'integrity' => 'sha512-ZplJXUTeRh13LTLjfwydrUFpRJaHOoSIKdoMQP4s1gWyJoXqsTqxBeGdt4fQyfNq/Xo21u8IGaA3PjLfiefZJw==',
                 'crossorigin' => 'anonymous',
             ],
         ];
@@ -200,7 +202,7 @@ class Gateway extends BaseGateway
         } else {
             $html = $view->renderTemplate('commerce-opayo/paymentForm', $params);
         }
-        
+
         $view->setTemplateMode($previousMode);
 
         return $html;
